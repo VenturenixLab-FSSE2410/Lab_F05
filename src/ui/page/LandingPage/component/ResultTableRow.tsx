@@ -1,17 +1,75 @@
 import {Button, TableCell, TableRow} from "@mui/material";
+import {Result, VehicleType} from "../../../../data/CarParkInfo.type.ts";
 
-export default function ResultTableRow(){
-  return(
+type Props = {
+  result: Result,
+  vehicleTypeFilter: string
+}
+
+export default function ResultTableRow({result, vehicleTypeFilter}: Props) {
+  const renderCarkParkImage = () => {
+    if (!result.renditionUrls) {
+      return <></>
+    } else if (result.renditionUrls.square) {
+      return (
+        <div
+          style={{
+            backgroundImage: `url(${result.renditionUrls.square})`,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            width: 240,
+            height: 120
+          }}
+        >
+        </div>
+      )
+    } else if (result.renditionUrls.carpark_photo) {
+      return (
+        <div
+          style={{
+            backgroundImage: `url(${result.renditionUrls.carpark_photo})`,
+            backgroundSize: "contain",
+            backgroundRepeat: "no-repeat",
+            width: 240,
+            height: 180
+          }}
+        >
+        </div>
+      )
+    } else {
+      return <></>
+    }
+  }
+
+  const handleMapBtnOnClick = () => {
+    window.open(`https://maps.google.com/maps?q=${result.latitude},${result.longitude}`, "_blank")
+  }
+
+  const renderVehicleVacancy = () => {
+    if (!(result[vehicleTypeFilter as VehicleType])) {
+      return "NA"
+    } else {
+      return result[vehicleTypeFilter as VehicleType]!.space
+    }
+  }
+
+  return (
     <>
-
       <TableRow>
         <TableCell>
-          <img src="https://sps-opendata.pilotsmartke.gov.hk/rest/getRendition/fs-1%3A693265207413252869411532657339312395903827562313.JPG/square.png"/>
+          {renderCarkParkImage()}
         </TableCell>
-        <TableCell>Kai Tak Cruise Terminal Car Park 1</TableCell>
-        <TableCell>1st floor, Kai Tak Cruise Terminal, 33 Shing Fung Road, Kowloon Bay, KLN</TableCell>
-        <TableCell>0</TableCell>
-        <TableCell><Button variant="outlined">MAP</Button></TableCell>
+        <TableCell>{result.name}</TableCell>
+        <TableCell>{result.displayAddress}</TableCell>
+        <TableCell>{renderVehicleVacancy()}</TableCell>
+        <TableCell>
+          <Button
+            variant="outlined"
+            onClick={handleMapBtnOnClick}
+          >
+            MAP
+          </Button>
+        </TableCell>
       </TableRow>
     </>
   )

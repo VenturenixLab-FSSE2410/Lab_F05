@@ -1,6 +1,18 @@
 import {FormControl, InputLabel, MenuItem, Paper, Select, TextField} from "@mui/material";
 
-export default function FilterForm() {
+type Props = {
+  districtFilter: string,
+  vehicleTypeFilter: string,
+  handleDistrictFilterChange: (newDistrictFilter: string) => void,
+  handleVehicleTypeFilterChange: (newVehicleType: string) => void
+}
+
+export default function FilterForm({
+                                     districtFilter,
+                                     vehicleTypeFilter,
+                                     handleDistrictFilterChange,
+                                     handleVehicleTypeFilterChange
+                                   }: Props) {
   const style = {
     paperStyle: {
       p: 3,
@@ -11,14 +23,22 @@ export default function FilterForm() {
     }
   }
 
-
   return (
     <>
       <Paper
         component="form"
         sx={style.paperStyle}
       >
-        <TextField fullWidth id="outlined-basic" label="District" variant="outlined"/>
+        <TextField
+          fullWidth
+          id="outlined-basic"
+          label="District"
+          variant="outlined"
+          value={districtFilter}
+          onChange={(event) => {
+            handleDistrictFilterChange(event.target.value);
+          }}
+        />
 
         <FormControl
           fullWidth
@@ -28,9 +48,11 @@ export default function FilterForm() {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value="privateCar"
+            value={vehicleTypeFilter}
             label="Vehicle Type"
-            // onChange={handleChange}
+            onChange={(event) => {
+              handleVehicleTypeFilterChange(event.target.value)
+            }}
           >
             <MenuItem value="privateCar">Private Car</MenuItem>
             <MenuItem value="LGV">LGV</MenuItem>

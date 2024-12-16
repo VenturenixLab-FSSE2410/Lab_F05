@@ -43,3 +43,5 @@ export interface Coach {
 export interface MotorCycle {
   space: number;
 }
+
+export type VehicleType = "privateCar" | "LGV" | "HGV" | "coach" | "motorCycle";
