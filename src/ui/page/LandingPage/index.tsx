@@ -4,7 +4,8 @@ import {Container} from "@mui/material";
 import ResultTable from "./component/ResultTable.tsx";
 import {useEffect, useState} from "react";
 import {CarkParkInfoDto} from "../../../data/CarParkInfo.type.ts";
-import mockData from "./response.json";
+import * as carkParkInfoApi from "../../../api/carParkInfoApi.ts";
+import TableLoadingContainer from "./component/TableLoadingContainer.tsx";
 
 export default function LandingPage() {
   const [infoDto, setInfoDto] = useState<CarkParkInfoDto | undefined>(undefined);
@@ -21,10 +22,26 @@ export default function LandingPage() {
     setVehicleTypeFilter(newVehicleType);
   }
 
+  const fetchCarParkInfo = async () => {
+    try {
+      const responseData = await carkParkInfoApi.getCarParkInfo()
+      setInfoDto(responseData);
+      setIsLoading(false);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   useEffect(() => {
-    setInfoDto(mockData);
-    setIsLoading(false);
-  }, []);
+    setIsLoading(true);
+    const debounce = setTimeout(() => {
+      fetchCarParkInfo();
+    }, 1000);
+
+    return () => {
+      clearTimeout(debounce);
+    }
+  }, [districtFilter]);
 
   return (
     <>
@@ -37,12 +54,16 @@ export default function LandingPage() {
           handleVehicleTypeFilterChange={handleVehicleTypeFilterChange}
         />
         {
-          !isLoading && infoDto &&
-          <ResultTable
-            infoDto={infoDto}
-            districtFilter={districtFilter}
-            vehicleTypeFilter={vehicleTypeFilter}
-          />
+          (!isLoading && infoDto)
+            ? (
+              <ResultTable
+                infoDto={infoDto}
+                districtFilter={districtFilter}
+                vehicleTypeFilter={vehicleTypeFilter}
+              />
+            ) : (
+              <TableLoadingContainer/>
+            )
         }
       </Container>
     </>

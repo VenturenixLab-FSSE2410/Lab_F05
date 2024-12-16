@@ -1,4 +1,5 @@
 import {Button, TableCell, TableRow} from "@mui/material";
+import BrokenImageIcon from '@mui/icons-material/BrokenImage';
 import {Result, VehicleType} from "../../../../data/CarParkInfo.type.ts";
 
 type Props = {
@@ -9,7 +10,20 @@ type Props = {
 export default function ResultTableRow({result, vehicleTypeFilter}: Props) {
   const renderCarkParkImage = () => {
     if (!result.renditionUrls) {
-      return <></>
+      return (
+        <div
+          style={{
+            width: 240,
+            height: 120,
+            border: "black 1px solid",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <BrokenImageIcon fontSize="large" color="error"/>
+        </div>
+      )
     } else if (result.renditionUrls.square) {
       return (
         <div
